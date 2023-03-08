@@ -13,7 +13,7 @@ const TopBar = () => {
         </a>
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default TopBar;
+export default TopBar

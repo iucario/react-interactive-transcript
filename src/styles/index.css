@@ -135,3 +135,20 @@ button svg {
   margin: 0;
 }
 
+
+.transcript {
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.line:hover {
+  background-color: rgb(135, 206, 250);
+  cursor: pointer;
+}
+
+.line.active {
+  background-color: rgba(135, 206, 250, 0.5);
+}
