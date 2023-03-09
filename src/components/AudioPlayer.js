@@ -30,8 +30,8 @@ const AudioPlayer = () => {
   }, [])
 
   const handleKeyDown = (event) => {
-    event.preventDefault()
     if (event.key === ' ') {
+      event.preventDefault()
       // toggle pause/play
       setIsPlaying((prev) => !prev)
     } else if (event.key === 'ArrowUp') {
@@ -96,10 +96,12 @@ const AudioPlayer = () => {
           <ProgressBar
             {...{ progressBarRef, audioRef, timeProgress, duration }}
           />
-          <Transcript
-            audioRef={audioRef}
-            transcript={currentTrack.transcript}
-          />
+          {currentTrack.transcript && (
+            <Transcript
+              audioRef={audioRef}
+              transcript={currentTrack.transcript}
+            />
+          )}
         </div>
       </div>
     </>
