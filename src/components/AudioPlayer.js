@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { tracks } from '../data/tracks'
 
 // import components
@@ -14,10 +14,34 @@ const AudioPlayer = () => {
   const [currentTrack, setCurrentTrack] = useState(tracks[trackIndex])
   const [timeProgress, setTimeProgress] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
 
   // reference
   const audioRef = useRef()
   const progressBarRef = useRef()
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  const handleKeyDown = (event) => {
+    event.preventDefault()
+    if (event.key === ' ') {
+      // toggle pause/play
+      setIsPlaying((prev) => !prev)
+    } else if (event.key === 'ArrowUp') {
+      // increase volume
+    } else if (event.key === 'ArrowDown') {
+      // decrease volume
+    } else if (event.key === 'ArrowRight') {
+      // Next sentence
+    } else if (event.key === 'ArrowLeft') {
+      // Previous sentence
+    }
+  }
 
   const handleNext = () => {
     if (trackIndex >= tracks.length - 1) {
@@ -54,6 +78,8 @@ const AudioPlayer = () => {
               setTrackIndex,
               setCurrentTrack,
               handleNext,
+              isPlaying,
+              setIsPlaying,
             }}
           />
           <ProgressBar
