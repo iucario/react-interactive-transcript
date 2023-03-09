@@ -35,7 +35,7 @@ body {
   margin-bottom: 0;
   padding: 2px;
   line-height: 37px;
-  background-color: rgba(0,0,0,.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 /* audio image */
@@ -49,7 +49,7 @@ body {
 .audio-image {
   width: 300px;
   height: 300px;
-  background: #1e1e1e; 
+  background: #1e1e1e;
 }
 
 .audio-icon {
@@ -78,7 +78,8 @@ body {
   margin-top: 10px;
 }
 
-.controls button, .volume button {
+.controls button,
+.volume button {
   border: none;
   background-color: transparent;
   margin-right: 8px;
@@ -121,8 +122,8 @@ button svg {
   font-size: 0.875rem;
   line-height: 1.25rem;
   text-align: center;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   background-color: #fafafa;
   border-bottom: 1px solid #f0f0f2;
 }
@@ -135,20 +136,21 @@ button svg {
   margin: 0;
 }
 
-
 .transcript {
   margin-top: 20px;
   background-color: #fff;
   border-radius: 5px;
   padding: 20px;
   line-height: 1.5;
+  font-family: 'Sofia sans', 'Roboto', sans-serif;
+  font-size: 1.1rem;
 }
 
 .line:hover {
-  background-color: rgb(135, 206, 250);
+  background-color: rgba(255, 182, 193, 0.7);
   cursor: pointer;
 }
 
 .line.active {
-  background-color: rgba(135, 206, 250, 0.5);
+  background-color: rgba(255, 242, 182, 1);
 }

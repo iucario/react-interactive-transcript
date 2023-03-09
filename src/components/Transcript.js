@@ -9,24 +9,11 @@ const Transcript = ({ audioRef, transcript }) => {
     parseTranscript(transcript).then((data) => {
       if (data !== null) {
         setTranscriptData(data.cues)
+      } else {
+        setTranscriptData(null)
       }
     })
   }, [transcript])
-
-  const parseTranscript = async (vttFile) => {
-    if (!vttFile) return null
-    const data = await fetch(vttFile)
-    const text = await data.text()
-    try {
-      const parsed = webvtt.parse(text)
-      if (parsed.valid) {
-        return parsed
-      }
-    } catch (e) {
-      console.log(e)
-    }
-    return null
-  }
 
   const handleSeek = () => {
     audioRef.current.currentTime = progress
@@ -77,6 +64,21 @@ const Line = ({ cue, handleClick, currentLine: currentTime }) => {
       {cue.text}&nbsp;
     </span>
   )
+}
+
+const parseTranscript = async (vttFile) => {
+  if (!vttFile) return null
+  const data = await fetch(vttFile)
+  const text = await data.text()
+  try {
+    const parsed = webvtt.parse(text)
+    if (parsed.valid) {
+      return parsed
+    }
+  } catch (e) {
+    console.log(e)
+  }
+  return null
 }
 
 export default Transcript
