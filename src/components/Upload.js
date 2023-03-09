@@ -1,19 +1,21 @@
 import { useState } from 'react'
 
-function Upload({ onAudioUpload, onTranscriptUpload }) {
+function Upload({ onUpload }) {
   const [audioFile, setAudioFile] = useState(null)
   const [transcriptFile, setTranscriptFile] = useState(null)
 
   const handleAudioChange = (event) => {
     const file = event.target.files[0]
     setAudioFile(file)
-    onAudioUpload(file)
   }
 
   const handleTranscriptChange = (event) => {
     const file = event.target.files[0]
     setTranscriptFile(file)
-    onTranscriptUpload(file)
+  }
+
+  const handleUpload = () => {
+    onUpload(audioFile, transcriptFile)
   }
 
   return (
@@ -36,6 +38,7 @@ function Upload({ onAudioUpload, onTranscriptUpload }) {
           onChange={handleTranscriptChange}
         />
       </div>
+      <button onClick={handleUpload}>Upload</button>
     </div>
   )
 }

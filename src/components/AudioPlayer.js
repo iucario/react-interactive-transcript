@@ -1,9 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
-import { tracks } from '../data/tracks'
+import { useEffect, useRef, useState } from 'react'
 
 // import components
-import DisplayTrack from './DisplayTrack'
 import Controls from './Controls'
+import DisplayTrack from './DisplayTrack'
 import ProgressBar from './ProgressBar'
 import TopBar from './TopBar'
 import Transcript from './Transcript'
@@ -11,15 +10,12 @@ import Upload from './Upload'
 
 const AudioPlayer = () => {
   // states
-  const [trackIndex, setTrackIndex] = useState(0)
-  const [currentTrack, setCurrentTrack] = useState(tracks[trackIndex])
+  const [currentTrack, setCurrentTrack] = useState(null)
   const [timeProgress, setTimeProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(60)
   const [muteVolume, setMuteVolume] = useState(false)
-  const [audioFile, setAudioFile] = useState(null)
-  const [transcriptFile, setTranscriptFile] = useState(null)
 
   // reference
   const audioRef = useRef()
@@ -52,83 +48,72 @@ const AudioPlayer = () => {
   }
 
   const handleNext = () => {
-    if (trackIndex >= tracks.length - 1) {
-      setTrackIndex(0)
-      setCurrentTrack(tracks[0])
-    } else {
-      setTrackIndex((prev) => prev + 1)
-      setCurrentTrack(tracks[trackIndex + 1])
-    }
-  }
-
-  const handleAudioUpload = (file) => {
-    setAudioFile(file)
-    const track = {
-      title: file.name,
-      src: URL.createObjectURL(file),
-      artist: 'Uploaded',
-    }
-    setCurrentTrack(track)
-    setTrackIndex(0)
+    console.warn('Multiple tracks not supported yet')
   }
 
   const handleTranscriptUpload = (file) => {
-    setTranscriptFile(file)
     const reader = new FileReader()
     reader.onload = (e) => {
       const transcript = JSON.parse(e.target.result)
       setCurrentTrack((prev) => ({ ...prev, transcript }))
     }
+    reader.readAsText(file)
+  }
+
+  const handleUpload = (audioFile, transcriptFile) => {
+    console.log(audioFile, transcriptFile)
+    const track = {
+      title: audioFile.name,
+      src: URL.createObjectURL(audioFile),
+      artist: 'Uploaded',
+    }
+    setCurrentTrack(track)
+    handleTranscriptUpload(transcriptFile)
   }
 
   return (
     <>
       <TopBar />
-      <Upload
-        onAudioUpload={handleAudioUpload}
-        onTranscriptUpload={handleTranscriptUpload}
-      />
-      <div className="audio-player">
-        <div className="inner">
-          <DisplayTrack
-            {...{
-              currentTrack,
-              audioRef,
-              setDuration,
-              progressBarRef,
-              handleNext,
-            }}
-          />
-          <Controls
-            {...{
-              audioRef,
-              progressBarRef,
-              duration,
-              setTimeProgress,
-              tracks,
-              trackIndex,
-              setTrackIndex,
-              setCurrentTrack,
-              handleNext,
-              isPlaying,
-              setIsPlaying,
-              volume,
-              setVolume,
-              muteVolume,
-              setMuteVolume,
-            }}
-          />
-          <ProgressBar
-            {...{ progressBarRef, audioRef, timeProgress, duration }}
-          />
-          {currentTrack.transcript && (
-            <Transcript
-              audioRef={audioRef}
-              transcript={currentTrack.transcript}
+      <Upload onUpload={handleUpload} />
+      {currentTrack && (
+        <div className="audio-player">
+          <div className="inner">
+            <DisplayTrack
+              {...{
+                currentTrack,
+                audioRef,
+                setDuration,
+                progressBarRef,
+                handleNext,
+              }}
             />
-          )}
+            <Controls
+              {...{
+                audioRef,
+                progressBarRef,
+                duration,
+                setTimeProgress,
+                handleNext,
+                isPlaying,
+                setIsPlaying,
+                volume,
+                setVolume,
+                muteVolume,
+                setMuteVolume,
+              }}
+            />
+            <ProgressBar
+              {...{ progressBarRef, audioRef, timeProgress, duration }}
+            />
+            {currentTrack.transcript && (
+              <Transcript
+                audioRef={audioRef}
+                transcript={currentTrack.transcript}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   )
 }

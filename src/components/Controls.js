@@ -17,10 +17,6 @@ const Controls = ({
   progressBarRef,
   duration,
   setTimeProgress,
-  tracks,
-  trackIndex,
-  setTrackIndex,
-  setCurrentTrack,
   handleNext,
   isPlaying,
   setIsPlaying,
@@ -65,14 +61,7 @@ const Controls = ({
   }
 
   const handlePrevious = () => {
-    if (trackIndex === 0) {
-      let lastTrackIndex = tracks.length - 1
-      setTrackIndex(lastTrackIndex)
-      setCurrentTrack(tracks[lastTrackIndex])
-    } else {
-      setTrackIndex((prev) => prev - 1)
-      setCurrentTrack(tracks[trackIndex - 1])
-    }
+    console.warn('Multiple tracks not supported yet')
   }
 
   useEffect(() => {
