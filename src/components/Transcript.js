@@ -55,17 +55,21 @@ const Transcript = ({ audioRef, transcript }) => {
   return (
     <div className="transcript">
       <h1>Transcript</h1>
-      {transcriptData !== null &&
-        transcriptData.map((cue) => {
-          return (
-            <Line
-              key={cue.start}
-              cue={cue}
-              handleClick={handleLineClick}
-              currentTime={audioRef.current ? audioRef.current.currentTime : 0}
-            />
-          )
-        })}
+      <article>
+        {transcriptData !== null &&
+          transcriptData.map((cue) => {
+            return (
+              <Line
+                key={cue.start}
+                cue={cue}
+                handleClick={handleLineClick}
+                currentTime={
+                  audioRef.current ? audioRef.current.currentTime : 0
+                }
+              />
+            )
+          })}
+      </article>
     </div>
   )
 }
@@ -73,10 +77,12 @@ const Transcript = ({ audioRef, transcript }) => {
 const Line = ({ cue, handleClick, currentTime }) => {
   const style =
     currentTime >= cue.start && currentTime <= cue.end ? 'line active' : 'line'
+  const breakOrSpace = cue.text.endsWith('.') ? <br /> : ' '
 
   return (
     <span className={style} onClick={() => handleClick(cue)}>
-      {cue.text}&nbsp;
+      {cue.text}
+      {breakOrSpace}
     </span>
   )
 }
