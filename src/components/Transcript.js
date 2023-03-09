@@ -1,50 +1,31 @@
-import webvtt from 'node-webvtt'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect } from 'react'
 
 const Transcript = ({ audioRef, transcript }) => {
-  const [transcriptData, setTranscriptData] = useState(null)
-  const intervalsRef = useRef(null)
+  const transcriptData = parseTranscript(transcript)
+  const startTimes = transcriptData.flat().map((cue) => cue.start)
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
     return () => {
-      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
     }
   }, [])
 
-  useEffect(() => {
-    parseTranscript(transcript).then((data) => {
-      if (data !== null) {
-        const intervals = data.cues.map((cue) => [cue.start, cue.end])
-        setTranscriptData(data.cues)
-        intervalsRef.current = intervals
-      } else {
-        setTranscriptData(null)
-      }
-    })
-  }, [transcript])
-
-  const handleKeyDown = (event) => {
+  const handleKeyUp = (event) => {
     if (event.key === 'ArrowRight') {
       // Next cue
       event.preventDefault()
-      if (intervalsRef.current === null) return
-      const currentCue = findInterval(
-        intervalsRef.current,
-        audioRef.current.currentTime
-      )
-      const nextCue = Math.min(intervalsRef.current.length - 1, currentCue + 1)
-      audioRef.current.currentTime = intervalsRef.current[nextCue][0]
+      if (startTimes === null) return
+      const currentCue = bisect_right(startTimes, audioRef.current.currentTime)
+      const nextCue = Math.min(startTimes.length - 1, currentCue + 1)
+      audioRef.current.currentTime = startTimes[nextCue]
     } else if (event.key === 'ArrowLeft') {
       // Previous cue
       event.preventDefault()
-      if (intervalsRef.current === null) return
-      const currentCue = findInterval(
-        intervalsRef.current,
-        audioRef.current.currentTime
-      )
+      if (startTimes === null) return
+      const currentCue = bisect_right(startTimes, audioRef.current.currentTime)
       const prevCue = Math.max(0, currentCue - 1)
-      audioRef.current.currentTime = intervalsRef.current[prevCue][0]
+      audioRef.current.currentTime = startTimes[prevCue]
     }
   }
 
@@ -57,11 +38,11 @@ const Transcript = ({ audioRef, transcript }) => {
       <h1>Transcript</h1>
       <article>
         {transcriptData !== null &&
-          transcriptData.map((cue) => {
+          transcriptData.map((paragraph, i) => {
             return (
-              <Line
-                key={cue.start}
-                cue={cue}
+              <Paragraph
+                key={i}
+                paragraph={paragraph}
                 handleClick={handleLineClick}
                 currentTime={
                   audioRef.current ? audioRef.current.currentTime : 0
@@ -74,49 +55,79 @@ const Transcript = ({ audioRef, transcript }) => {
   )
 }
 
+const Paragraph = ({ paragraph, handleClick, currentTime }) => {
+  return (
+    <p>
+      {paragraph.map((cue) => {
+        return (
+          <Line
+            key={cue.start}
+            cue={cue}
+            handleClick={handleClick}
+            currentTime={currentTime}
+          />
+        )
+      })}
+    </p>
+  )
+}
+
 const Line = ({ cue, handleClick, currentTime }) => {
   const style =
-    currentTime >= cue.start && currentTime <= cue.end ? 'line active' : 'line'
-  const breakOrSpace = cue.text.endsWith('.') ? <br /> : ' '
+    currentTime >= cue.start && currentTime < cue.end ? 'line active' : 'line'
 
   return (
     <span className={style} onClick={() => handleClick(cue)}>
-      {cue.text}
-      {breakOrSpace}
+      {cue.text}&nbsp;
     </span>
   )
 }
 
-const parseTranscript = async (vttFile) => {
-  if (!vttFile) return null
-  const data = await fetch(vttFile)
-  const text = await data.text()
-  try {
-    const parsed = webvtt.parse(text)
-    if (parsed.valid) {
-      return parsed
-    }
-  } catch (e) {
-    console.log(e)
-  }
-  return null
+/**Parse TED transcript data paragraphs JSON */
+const parseTranscript = (transcriptData) => {
+  const paragraphs = transcriptData.map((para) => {
+    const cues = para.cues.map((cue) => {
+      const millisec = cue.time
+      return {
+        start: millisec / 1000,
+        text: cue.text,
+      }
+    })
+    return cues
+  })
+
+  const startTimes = paragraphs.flat().map((cue) => cue.start)
+  const endTimes = startTimes.concat([1e10])
+  let i = 0 // I hate this but its easy
+  const paragraphsWithEndTimes = paragraphs.map((para) => {
+    return para.map((cue) => {
+      i += 1
+      return { ...cue, end: endTimes[i] }
+    })
+  })
+
+  return paragraphsWithEndTimes
 }
 
-function findInterval(intervals, time) {
-  let start = 0
-  let end = intervals.length - 1
-  while (start <= end) {
-    const mid = Math.floor((start + end) / 2)
-    const [intervalStart, intervalEnd] = intervals[mid]
-    if (time >= intervalStart && time <= intervalEnd) {
-      return mid
-    } else if (time < intervalStart) {
-      end = mid - 1
+function bisect_right(startTimes, time) {
+  let low = 0
+  let high = startTimes.length - 1
+
+  if (time < startTimes[low]) return -1
+
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2)
+    if (startTimes[mid] < time) {
+      low = mid + 1
     } else {
-      start = mid + 1
+      high = mid
     }
   }
-  return -1 // interval not found
+  // FIXME: bisect_right but something is wrong. This is a hack.
+  if (startTimes[low] > time) {
+    low -= 1
+  }
+  return low
 }
 
 export default Transcript

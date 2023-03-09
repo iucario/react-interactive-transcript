@@ -7,13 +7,14 @@ import jackson from './jackson.jpeg'
 
 // transcript
 import testsub from './5_ways_to_listen_better.en.vtt'
+import sub from './transcript.json'
 
 export const tracks = [
   {
     title: '5 Ways to Listen Better',
     src: test,
     author: 'TED',
-    transcript: testsub,
+    transcript: sub,
   },
   {
     title: 'Michael Jackson – We Are The World',

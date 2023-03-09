@@ -7,6 +7,7 @@ import Controls from './Controls'
 import ProgressBar from './ProgressBar'
 import TopBar from './TopBar'
 import Transcript from './Transcript'
+import Upload from './Upload'
 
 const AudioPlayer = () => {
   // states
@@ -17,6 +18,8 @@ const AudioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(60)
   const [muteVolume, setMuteVolume] = useState(false)
+  const [audioFile, setAudioFile] = useState(null)
+  const [transcriptFile, setTranscriptFile] = useState(null)
 
   // reference
   const audioRef = useRef()
@@ -58,9 +61,33 @@ const AudioPlayer = () => {
     }
   }
 
+  const handleAudioUpload = (file) => {
+    setAudioFile(file)
+    const track = {
+      title: file.name,
+      src: URL.createObjectURL(file),
+      artist: 'Uploaded',
+    }
+    setCurrentTrack(track)
+    setTrackIndex(0)
+  }
+
+  const handleTranscriptUpload = (file) => {
+    setTranscriptFile(file)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const transcript = JSON.parse(e.target.result)
+      setCurrentTrack((prev) => ({ ...prev, transcript }))
+    }
+  }
+
   return (
     <>
       <TopBar />
+      <Upload
+        onAudioUpload={handleAudioUpload}
+        onTranscriptUpload={handleTranscriptUpload}
+      />
       <div className="audio-player">
         <div className="inner">
           <DisplayTrack

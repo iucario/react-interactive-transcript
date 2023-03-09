@@ -1,3 +1,5 @@
+fs = require('fs')
+
 const searchNextjsData = (html) => {
   const nextjsData = html.matchAll(
     /<script[^>]+id=[\'"]__NEXT_DATA__[\'"][^>]*>([^<]+)<\/script>/g
@@ -11,10 +13,15 @@ const searchNextjsData = (html) => {
 const testUrl =
   'https://www.ted.com/talks/julian_treasure_5_ways_to_listen_better/transcript?language=en'
 
-export const parseParagraphs = async (url) => {
+const parseParagraphs = async (url) => {
   const resp = await fetch(url)
   const data = searchNextjsData(await resp.text())
   const transcriptData = data.props.pageProps.transcriptData
   const paragraphs = transcriptData.translation.paragraphs
   return paragraphs
 }
+
+parseParagraphs(testUrl).then((data) => {
+  console.log(data)
+  fs.writeFileSync('transcript.json', JSON.stringify(data))
+})
