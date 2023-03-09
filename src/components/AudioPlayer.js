@@ -15,6 +15,8 @@ const AudioPlayer = () => {
   const [timeProgress, setTimeProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [volume, setVolume] = useState(60)
+  const [muteVolume, setMuteVolume] = useState(false)
 
   // reference
   const audioRef = useRef()
@@ -34,8 +36,13 @@ const AudioPlayer = () => {
       setIsPlaying((prev) => !prev)
     } else if (event.key === 'ArrowUp') {
       // increase volume
+      setVolume((prev) => Math.min(100, prev + 10))
     } else if (event.key === 'ArrowDown') {
       // decrease volume
+      setVolume((prev) => Math.max(0, prev - 10))
+    } else if (event.key === 'm') {
+      // toggle mute
+      setMuteVolume((prev) => !prev)
     } else if (event.key === 'ArrowRight') {
       // Next sentence
     } else if (event.key === 'ArrowLeft') {
@@ -80,6 +87,10 @@ const AudioPlayer = () => {
               handleNext,
               isPlaying,
               setIsPlaying,
+              volume,
+              setVolume,
+              muteVolume,
+              setMuteVolume,
             }}
           />
           <ProgressBar

@@ -24,10 +24,11 @@ const Controls = ({
   handleNext,
   isPlaying,
   setIsPlaying,
+  volume,
+  setVolume,
+  muteVolume,
+  setMuteVolume,
 }) => {
-  const [volume, setVolume] = useState(60)
-  const [muteVolume, setMuteVolume] = useState(false)
-
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev)
   }
