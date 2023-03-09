@@ -1,9 +1,9 @@
 import webvtt from 'node-webvtt'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 const Transcript = ({ audioRef, transcript }) => {
-  const [progress, setProgress] = useState(0)
   const [transcriptData, setTranscriptData] = useState(null)
+  const intervalsRef = useRef(null)
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -15,7 +15,9 @@ const Transcript = ({ audioRef, transcript }) => {
   useEffect(() => {
     parseTranscript(transcript).then((data) => {
       if (data !== null) {
+        const intervals = data.cues.map((cue) => [cue.start, cue.end])
         setTranscriptData(data.cues)
+        intervalsRef.current = intervals
       } else {
         setTranscriptData(null)
       }
@@ -24,53 +26,46 @@ const Transcript = ({ audioRef, transcript }) => {
 
   const handleKeyDown = (event) => {
     if (event.key === 'ArrowRight') {
-      event.preventDefault()
       // Next cue
+      event.preventDefault()
+      if (intervalsRef.current === null) return
+      const currentCue = findInterval(
+        intervalsRef.current,
+        audioRef.current.currentTime
+      )
+      const nextCue = Math.min(intervalsRef.current.length - 1, currentCue + 1)
+      audioRef.current.currentTime = intervalsRef.current[nextCue][0]
     } else if (event.key === 'ArrowLeft') {
       // Previous cue
+      event.preventDefault()
+      if (intervalsRef.current === null) return
+      const currentCue = findInterval(
+        intervalsRef.current,
+        audioRef.current.currentTime
+      )
+      const prevCue = Math.max(0, currentCue - 1)
+      audioRef.current.currentTime = intervalsRef.current[prevCue][0]
     }
-  }
-
-  const handleSeek = () => {
-    audioRef.current.currentTime = progress
   }
 
   const handleLineClick = (cue) => {
     audioRef.current.currentTime = cue.start
   }
 
-  const handleProgressChange = (event) => {
-    setProgress(event.target.value)
-  }
-
   return (
-    <div>
-      <input
-        type="number"
-        value={progress}
-        step={1}
-        min={0}
-        max={audioRef.current ? audioRef.current.duration : 0}
-        onChange={handleProgressChange}
-      />
-      <button onClick={handleSeek}>Seek</button>
-
-      <div className="transcript">
-        <h1>Transcript</h1>
-        {transcriptData !== null &&
-          transcriptData.map((cue) => {
-            return (
-              <Line
-                key={cue.start}
-                cue={cue}
-                handleClick={handleLineClick}
-                currentTime={
-                  audioRef.current ? audioRef.current.currentTime : 0
-                }
-              />
-            )
-          })}
-      </div>
+    <div className="transcript">
+      <h1>Transcript</h1>
+      {transcriptData !== null &&
+        transcriptData.map((cue) => {
+          return (
+            <Line
+              key={cue.start}
+              cue={cue}
+              handleClick={handleLineClick}
+              currentTime={audioRef.current ? audioRef.current.currentTime : 0}
+            />
+          )
+        })}
     </div>
   )
 }

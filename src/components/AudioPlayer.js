@@ -30,8 +30,10 @@ const AudioPlayer = () => {
   }, [])
 
   const handleKeyDown = (event) => {
+    const availableKeys = [' ', 'ArrowUp', 'ArrowDown', 'm']
+    if (availableKeys.includes(event.key)) event.preventDefault()
+
     if (event.key === ' ') {
-      event.preventDefault()
       // toggle pause/play
       setIsPlaying((prev) => !prev)
     } else if (event.key === 'ArrowUp') {
@@ -43,10 +45,6 @@ const AudioPlayer = () => {
     } else if (event.key === 'm') {
       // toggle mute
       setMuteVolume((prev) => !prev)
-    } else if (event.key === 'ArrowRight') {
-      // Next sentence
-    } else if (event.key === 'ArrowLeft') {
-      // Previous sentence
     }
   }
 
