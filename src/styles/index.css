@@ -142,8 +142,8 @@ button svg {
   border-radius: 5px;
   padding: 20px;
   line-height: 1.5;
-  font-family: 'Sofia sans', 'Roboto', sans-serif;
-  font-size: 1.1rem;
+  font-family: 'Inter', 'Lato', 'Sofia sans', 'Roboto', sans-serif;
+  font-size: 1rem;
 }
 
 .line:hover {
