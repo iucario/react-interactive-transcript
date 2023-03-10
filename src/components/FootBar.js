@@ -1,19 +1,22 @@
-const TopBar = () => {
+import { IoLogoGithub } from 'react-icons/io5'
+
+const FootBar = () => {
   return (
     <div className="top__bar">
       <p>
-        The source code for this project is{' '}
+        This project is based on{' '}
         <a
           href="https://github.com/Ibaslogic/react-audio-player"
           target="_blank"
           rel="noopener noreferrer"
           title="github"
         >
-          available on GitHub
+          <IoLogoGithub />
+          Ibaslogic/react-audio-player
         </a>
       </p>
     </div>
   )
 }
 
-export default TopBar
+export default FootBar

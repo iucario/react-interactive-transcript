@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 // import components
 import Controls from './Controls'
 import DisplayTrack from './DisplayTrack'
+import FootBar from './FootBar'
 import ProgressBar from './ProgressBar'
-import TopBar from './TopBar'
 import Transcript from './Transcript'
 import Upload from './Upload'
 
@@ -73,8 +73,7 @@ const AudioPlayer = () => {
 
   return (
     <>
-      <TopBar />
-      <Upload onUpload={handleUpload} />
+      {!currentTrack && <Upload onUpload={handleUpload} />}
       {currentTrack && (
         <div className="audio-player">
           <div className="inner">
@@ -114,6 +113,7 @@ const AudioPlayer = () => {
           </div>
         </div>
       )}
+      <FootBar />
     </>
   )
 }
