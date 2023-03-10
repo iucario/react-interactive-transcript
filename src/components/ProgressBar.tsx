@@ -1,9 +1,20 @@
-const ProgressBar = ({ progressBarRef, audioRef, timeProgress, duration }) => {
+const ProgressBar = ({
+  progressBarRef,
+  audioRef,
+  timeProgress,
+  duration,
+}: {
+  progressBarRef: React.MutableRefObject<HTMLInputElement | null>
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>
+  timeProgress: number
+  duration: number
+}) => {
   const handleProgressChange = () => {
-    audioRef.current.currentTime = progressBarRef.current.value
+    if (audioRef.current === null || progressBarRef.current === null) return
+    audioRef.current.currentTime = parseFloat(progressBarRef.current.value)
   }
 
-  const formatTime = (time) => {
+  const formatTime = (time: number) => {
     if (time && !isNaN(time)) {
       const minutes = Math.floor(time / 60)
       const formatMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`

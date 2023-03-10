@@ -1,21 +1,26 @@
-import { useState, useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
-function Upload({ onUpload }) {
-  const [audioFile, setAudioFile] = useState(null)
-  const [transcriptFile, setTranscriptFile] = useState(null)
-  const audioFileRef = useRef(null)
-  const transcriptFileRef = useRef(null)
+function Upload({ onUpload }: { onUpload: Function }) {
+  const [audioFile, setAudioFile] = useState<File | null>(null)
+  const [transcriptFile, setTranscriptFile] = useState<File | null>(null)
+  const audioFileRef = useRef<HTMLLabelElement | null>(null)
+  const transcriptFileRef = useRef<HTMLLabelElement | null>(null)
 
-  const handleAudioChange = (event) => {
+  const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files === null) return
     const file = event.target.files[0]
     setAudioFile(file)
-    audioFileRef.current.innerText = file.name
+    if (audioFileRef.current) audioFileRef.current.innerText = file.name
   }
 
-  const handleTranscriptChange = (event) => {
+  const handleTranscriptChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files === null) return
     const file = event.target.files[0]
     setTranscriptFile(file)
-    transcriptFileRef.current.innerText = file.name
+    if (transcriptFileRef.current)
+      transcriptFileRef.current.innerText = file.name
   }
 
   const handleUpload = () => {

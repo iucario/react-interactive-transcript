@@ -1,6 +1,13 @@
 import { useEffect } from 'react'
+import { CueInterval, Transcript as TranscriptType } from './types'
 
-const Transcript = ({ audioRef, transcript }) => {
+const Transcript = ({
+  audioRef,
+  transcript,
+}: {
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>
+  transcript: TranscriptType
+}) => {
   const transcriptData = parseTranscript(transcript)
   const startTimes = transcriptData.flat().map((cue) => cue.start)
 
@@ -11,7 +18,9 @@ const Transcript = ({ audioRef, transcript }) => {
     }
   }, [])
 
-  const handleKeyUp = (event) => {
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (audioRef.current === null) return
+
     if (event.key === 'ArrowRight') {
       // Next cue
       event.preventDefault()
@@ -29,7 +38,9 @@ const Transcript = ({ audioRef, transcript }) => {
     }
   }
 
-  const handleLineClick = (cue) => {
+  const handleLineClick = (cue: CueInterval) => {
+    if (audioRef.current === null) return
+
     audioRef.current.currentTime = cue.start
   }
 
@@ -55,7 +66,15 @@ const Transcript = ({ audioRef, transcript }) => {
   )
 }
 
-const Paragraph = ({ paragraph, handleClick, currentTime }) => {
+const Paragraph = ({
+  paragraph,
+  handleClick,
+  currentTime,
+}: {
+  paragraph: CueInterval[]
+  handleClick: Function
+  currentTime: number
+}) => {
   return (
     <p>
       {paragraph.map((cue) => {
@@ -72,7 +91,15 @@ const Paragraph = ({ paragraph, handleClick, currentTime }) => {
   )
 }
 
-const Line = ({ cue, handleClick, currentTime }) => {
+const Line = ({
+  cue,
+  handleClick,
+  currentTime,
+}: {
+  cue: CueInterval
+  handleClick: Function
+  currentTime: number
+}) => {
   const style =
     currentTime >= cue.start && currentTime < cue.end ? 'line active' : 'line'
 
@@ -84,7 +111,7 @@ const Line = ({ cue, handleClick, currentTime }) => {
 }
 
 /**Parse TED transcript data paragraphs JSON */
-const parseTranscript = (transcriptData) => {
+const parseTranscript = (transcriptData: TranscriptType): CueInterval[][] => {
   const paragraphs = transcriptData.map((para) => {
     const cues = para.cues.map((cue) => {
       const millisec = cue.time
@@ -109,7 +136,7 @@ const parseTranscript = (transcriptData) => {
   return paragraphsWithEndTimes
 }
 
-function bisect_right(startTimes, time) {
+function bisect_right(startTimes: number[], time: number): number {
   let low = 0
   let high = startTimes.length - 1
 

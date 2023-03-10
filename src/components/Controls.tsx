@@ -22,28 +22,43 @@ const Controls = ({
   setIsPlaying,
   volume,
   setVolume,
-  muteVolume,
-  setMuteVolume,
+  isMuted,
+  setIsMuted,
+}: {
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>
+  progressBarRef: React.MutableRefObject<HTMLInputElement | null>
+  duration: number
+  setTimeProgress: (timeProgress: number) => void
+  handleNext: () => void
+  isPlaying: boolean
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
+  volume: number
+  setVolume: (volume: number) => void
+  isMuted: boolean
+  setIsMuted: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+  const playAnimationRef = useRef<number | null>(null)
+
   const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev)
+    setIsPlaying((prev: boolean) => !prev)
   }
 
-  const playAnimationRef = useRef()
-
   const repeat = useCallback(() => {
+    if (audioRef.current === null || progressBarRef.current === null) return
     const currentTime = audioRef.current.currentTime
     setTimeProgress(currentTime)
-    progressBarRef.current.value = currentTime
+    progressBarRef.current.value = currentTime.toString()
     progressBarRef.current.style.setProperty(
       '--range-progress',
-      `${(progressBarRef.current.value / duration) * 100}%`
+      `${(parseFloat(progressBarRef.current.value) / duration) * 100}%`
     )
 
-    playAnimationRef.current = requestAnimationFrame(repeat)
+    if (playAnimationRef.current !== null)
+      playAnimationRef.current = requestAnimationFrame(repeat)
   }, [audioRef, duration, progressBarRef, setTimeProgress])
 
   useEffect(() => {
+    if (audioRef.current === null) return
     if (isPlaying) {
       audioRef.current.play()
     } else {
@@ -53,10 +68,12 @@ const Controls = ({
   }, [isPlaying, audioRef, repeat])
 
   const skipForward = () => {
+    if (audioRef.current === null) return
     audioRef.current.currentTime += 15
   }
 
   const skipBackward = () => {
+    if (audioRef.current === null) return
     audioRef.current.currentTime -= 15
   }
 
@@ -65,11 +82,10 @@ const Controls = ({
   }
 
   useEffect(() => {
-    if (audioRef) {
-      audioRef.current.volume = volume / 100
-      audioRef.current.muted = muteVolume
-    }
-  }, [volume, audioRef, muteVolume])
+    if (audioRef.current === null) return
+    audioRef.current.volume = volume / 100
+    audioRef.current.muted = isMuted
+  }, [volume, audioRef, isMuted])
 
   return (
     <div className="controls-wrapper">
@@ -92,8 +108,8 @@ const Controls = ({
         </button>
       </div>
       <div className="volume">
-        <button onClick={() => setMuteVolume((prev) => !prev)}>
-          {muteVolume || volume < 5 ? (
+        <button onClick={() => setIsMuted((prev: boolean) => !prev)}>
+          {isMuted || volume < 5 ? (
             <IoMdVolumeOff />
           ) : volume < 40 ? (
             <IoMdVolumeLow />
@@ -106,7 +122,7 @@ const Controls = ({
           min={0}
           max={100}
           value={volume}
-          onChange={(e) => setVolume(e.target.value)}
+          onChange={(e) => setVolume(parseInt(e.target.value))}
           style={{
             background: `linear-gradient(to right, #f50 ${volume}%, #ccc ${volume}%)`,
           }}

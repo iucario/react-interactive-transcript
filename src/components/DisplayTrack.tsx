@@ -1,4 +1,5 @@
 import { BsMusicNoteBeamed } from 'react-icons/bs'
+import { Track } from './types'
 
 const DisplayTrack = ({
   currentTrack,
@@ -6,11 +7,18 @@ const DisplayTrack = ({
   setDuration,
   progressBarRef,
   handleNext,
+}: {
+  currentTrack: Track
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>
+  setDuration: (duration: number) => void
+  progressBarRef: React.MutableRefObject<HTMLInputElement | null>
+  handleNext: () => void
 }) => {
   const onLoadedMetadata = () => {
+    if (audioRef.current === null || progressBarRef.current === null) return
     const seconds = audioRef.current.duration
     setDuration(seconds)
-    progressBarRef.current.max = seconds
+    progressBarRef.current.max = seconds.toString()
   }
 
   return (

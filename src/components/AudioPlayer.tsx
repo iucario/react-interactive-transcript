@@ -8,18 +8,20 @@ import ProgressBar from './ProgressBar'
 import Transcript from './Transcript'
 import Upload from './Upload'
 
+import { Track, Transcript as TranscriptType } from './types'
+
 const AudioPlayer = () => {
   // states
-  const [currentTrack, setCurrentTrack] = useState(null)
-  const [timeProgress, setTimeProgress] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [volume, setVolume] = useState(60)
-  const [muteVolume, setMuteVolume] = useState(false)
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null)
+  const [timeProgress, setTimeProgress] = useState<number>(0)
+  const [duration, setDuration] = useState<number>(0)
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [volume, setVolume] = useState<number>(60)
+  const [isMuted, setIsMuted] = useState<boolean>(false)
 
   // reference
-  const audioRef = useRef()
-  const progressBarRef = useRef()
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const progressBarRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -28,7 +30,7 @@ const AudioPlayer = () => {
     }
   }, [])
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     const availableKeys = [' ', 'ArrowUp', 'ArrowDown', 'm']
     if (availableKeys.includes(event.key)) event.preventDefault()
 
@@ -43,7 +45,7 @@ const AudioPlayer = () => {
       setVolume((prev) => Math.max(0, prev - 10))
     } else if (event.key === 'm') {
       // toggle mute
-      setMuteVolume((prev) => !prev)
+      setIsMuted((prev) => !prev)
     }
   }
 
@@ -51,21 +53,22 @@ const AudioPlayer = () => {
     console.warn('Multiple tracks not supported yet')
   }
 
-  const handleTranscriptUpload = (file) => {
+  const handleTranscriptUpload = (file: File) => {
     const reader = new FileReader()
     reader.onload = (e) => {
-      const transcript = JSON.parse(e.target.result)
-      setCurrentTrack((prev) => ({ ...prev, transcript }))
+      if (e.target === null || typeof e.target.result !== 'string') return
+      const transcript = JSON.parse(e.target.result) as TranscriptType
+      setCurrentTrack((prev) => ({ ...prev, transcript } as Track))
     }
     reader.readAsText(file)
   }
 
-  const handleUpload = (audioFile, transcriptFile) => {
+  const handleUpload = (audioFile: File, transcriptFile: File) => {
     console.log(audioFile, transcriptFile)
     const track = {
       title: audioFile.name,
       src: URL.createObjectURL(audioFile),
-      artist: 'Uploaded',
+      author: 'Uploaded',
     }
     setCurrentTrack(track)
     handleTranscriptUpload(transcriptFile)
@@ -97,8 +100,8 @@ const AudioPlayer = () => {
                 setIsPlaying,
                 volume,
                 setVolume,
-                muteVolume,
-                setMuteVolume,
+                isMuted,
+                setIsMuted,
               }}
             />
             <ProgressBar
