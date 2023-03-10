@@ -1,15 +1,22 @@
+:root {
+  --main-color: #f16767;
+  --background-color: #f2f2f2;
+  --active-color: rgba(255, 242, 182, 1);
+  --hover-color: rgba(255, 182, 193, 0.7);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   font-family: sans-serif;
-  background: #f2f2f2;
-  margin: 0 10px;
+  background: var(--background-color);
+  margin: 0;
 }
 
 .audio-player {
-  background: #c1b6bc;
+  background: var(--background-color);
 }
 
 .inner {
@@ -65,7 +72,7 @@ body {
   padding: 6px 12px;
   border: none;
   border-radius: 2px;
-  background-color: #16a085;
+  background-color: #a459d1;
   color: #fff;
   cursor: pointer;
 }
@@ -76,12 +83,8 @@ body {
   gap: 20px;
 }
 
-.text {
-  color: #f50;
-}
-
 .title {
-  color: #f85252;
+  color: var(--main-color);
   font-weight: 400;
   font-size: 32px;
   margin-bottom: 0;
@@ -98,8 +101,8 @@ body {
 }
 
 .audio-image {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
   background: #1e1e1e;
 }
 
@@ -165,7 +168,7 @@ button svg {
 }
 
 .time.current {
-  color: #f50;
+  color: #f16767;
 }
 
 /* Top bar */
@@ -199,10 +202,10 @@ button svg {
 }
 
 .line:hover {
-  background-color: rgba(255, 182, 193, 0.7);
+  background-color: var(--hover-color);
   cursor: pointer;
 }
 
 .line.active {
-  background-color: rgba(255, 242, 182, 1);
+  background-color: var(--active-color);
 }
