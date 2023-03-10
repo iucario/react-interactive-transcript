@@ -1,33 +1,28 @@
-# A guide to building audio players for React apps
+# Interactive Transcript for TED.com
 
-## [Live project here](https://ibaslogic.github.io/react-audio-player/)
+The project is based on https://github.com/Ibaslogic/react-audio-player
 
-Read the step-by-step guide here: ...
+## Features
 
-## Clone project
+- Interactive transcript
+- Keyboard shortcuts
+- Upload audio and transcript files from computer
+- A script for downloading TED talk videos and transcripts
 
-You can download or clone this project by running this command from your terminal:
+## Usage
+
+Demo: http://iucario.github.io/react-audio-player
+
+Download video and transcript:
+`node src/utils/download.js https://ted.com/talks/slug`
+
+## Development
 
 ```
-git clone https://github.com/Ibaslogic/react-audio-player
-```
-
-Then:
-
-```
+git clone https://github.com/iucario/react-audio-player
 cd react-audio-player
-```
-
-```
 npm install
-# or
-yarn
-```
-
-```
 npm run dev
-# or
-yarn dev
 ```
 
-You should see the app in your browser address bar at [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000)
