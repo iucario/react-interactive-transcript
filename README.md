@@ -1,4 +1,6 @@
-# Interactive Transcript for TED.com
+# React Interactive Transcript
+
+Interactive Transcript for TED.com
 
 The project is based on https://github.com/Ibaslogic/react-audio-player
 
@@ -11,7 +13,7 @@ The project is based on https://github.com/Ibaslogic/react-audio-player
 
 ## Usage
 
-Demo: http://iucario.github.io/react-audio-player
+Demo: http://iucario.github.io/react-interactive-transcript
 
 Download video and transcript:
 `node src/utils/download.js https://ted.com/talks/slug`
@@ -19,7 +21,7 @@ Download video and transcript:
 ## Development
 
 ```
-git clone https://github.com/iucario/react-audio-player
+git clone https://github.com/iucario/react-interactive-transcript
 cd react-audio-player
 npm install
 npm run dev
