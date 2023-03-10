@@ -19,26 +19,32 @@ function Upload({ onUpload }) {
   }
 
   return (
-    <div>
-      <div>
-        <label htmlFor="audio-file">Upload audio file:</label>
-        <input
-          type="file"
-          id="audio-file"
-          accept="audio/*"
-          onChange={handleAudioChange}
-        />
+    <div className="upload-container">
+      <div className="upload-audio">
+        <label htmlFor="audio-file">
+          Upload audio file
+          <input
+            type="file"
+            id="audio-file"
+            accept="audio/*"
+            onChange={handleAudioChange}
+          />
+        </label>
       </div>
-      <div>
-        <label htmlFor="transcript-file">Upload transcript file:</label>
-        <input
-          type="file"
-          id="transcript-file"
-          accept=".json"
-          onChange={handleTranscriptChange}
-        />
+      <div className="upload-transcript">
+        <label htmlFor="transcript-file">
+          Upload transcript file
+          <input
+            type="file"
+            id="transcript-file"
+            accept=".json"
+            onChange={handleTranscriptChange}
+          />
+        </label>
       </div>
-      <button onClick={handleUpload}>Upload</button>
+      <button onClick={handleUpload} className="btn">
+        Upload
+      </button>
     </div>
   )
 }

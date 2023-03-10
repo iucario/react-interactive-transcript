@@ -18,6 +18,58 @@ body {
   padding: 20px;
 }
 
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 500px;
+  margin: auto;
+  background-color: #fff;
+  text-align: center;
+  gap: 20px;
+}
+
+.upload-container input[type='file'] {
+  display: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-audio {
+  border: 2px dashed #aaa;
+  width: 100%;
+}
+
+.upload-transcript {
+  border: 2px dashed #aaa;
+  width: 100%;
+}
+
+.upload-container label {
+  display: inline-block;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 100px;
+  color: #666;
+}
+
+.upload-container .btn {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 2px;
+  background-color: #16a085;
+  color: #fff;
+  cursor: pointer;
+}
+
 /* audio info */
 .audio-info {
   display: flex;
